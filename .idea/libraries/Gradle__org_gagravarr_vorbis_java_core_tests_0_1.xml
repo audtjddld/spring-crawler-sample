@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.gagravarr:vorbis-java-core:tests:0.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.gagravarr/vorbis-java-core/0.1/c849979e199d8a7c3da1a00799c623c00f94efac/vorbis-java-core-0.1-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.gagravarr/vorbis-java-core/0.1/32a583b83e6d88a3100b33d55899aa1b8ccb0cb1/vorbis-java-core-0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

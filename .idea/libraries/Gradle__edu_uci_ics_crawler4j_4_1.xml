@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: edu.uci.ics:crawler4j:4.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.uci.ics/crawler4j/4.1/735fc778c90fdc11fd422b58731727fbf6f81759/crawler4j-4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.uci.ics/crawler4j/4.1/c89e88ecbba8ed63d3721f5b79e2aeec644feb08/crawler4j-4.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

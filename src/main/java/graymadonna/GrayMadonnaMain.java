@@ -11,10 +11,11 @@ public class GrayMadonnaMain {
   public static void main(String[] args) throws Exception {
     int numberOfSrawlers = 1;
     CrawlConfig config = new CrawlConfig();
-    config.setMaxDepthOfCrawling(1);
+    // depth 가 곧 page number 수 이동도 연관된 것 같다.
+    config.setMaxDepthOfCrawling(15);
     config.setCrawlStorageFolder("/Users/we/git/javatest/backup");
     config.setUserAgentString("wonder-shopping-crawler");
-    config.setMaxPagesToFetch(50);
+    //config.setMaxPagesToFetch(50);
     config.setPolitenessDelay(2000);
 
     PageFetcher pageFetcher = new PageFetcher(config);
@@ -26,7 +27,6 @@ public class GrayMadonnaMain {
     System.out.println("id\ttitle\tprice_pc\tprice_mobile\tnormal_price\tlink\tmobile_link\timage_link\tcategory_name1");
 
     controller.start(GrayMadonnaCrawler.class, numberOfSrawlers);
-
 
   }
 }

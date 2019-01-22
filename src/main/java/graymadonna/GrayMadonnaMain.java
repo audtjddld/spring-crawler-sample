@@ -13,10 +13,10 @@ public class GrayMadonnaMain {
     CrawlConfig config = new CrawlConfig();
     // depth 가 곧 page number 수 이동도 연관된 것 같다.
     config.setMaxDepthOfCrawling(15);
-    config.setCrawlStorageFolder("/Users/we/git/javatest/backup");
+    config.setCrawlStorageFolder("~/git/javatest/backup");
     config.setUserAgentString("wonder-shopping-crawler");
-    //config.setMaxPagesToFetch(50);
-    config.setPolitenessDelay(2000);
+    //config.setMaxPagesToFetch(100);
+    config.setPolitenessDelay(1500);
 
     PageFetcher pageFetcher = new PageFetcher(config);
     RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

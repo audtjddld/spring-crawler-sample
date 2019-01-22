@@ -99,7 +99,6 @@ public class GrayMadonnaCrawler extends WebCrawler {
           .append(TAB);
 
       System.out.println(sb.toString());
-      //logger.info("{}", sb.toString());
     }
   }
 }

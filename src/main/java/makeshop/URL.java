@@ -11,7 +11,7 @@ public class URL {
     this.subURL = subUrl;
   }
 
-  public String getCombineUrl() {
+  public String getCombineURL() {
     return host + subURL;
   }
 

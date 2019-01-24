@@ -40,12 +40,12 @@ public class GrayMadonnaCrawler extends WebCrawler {
 
   @Override
   public void visit(Page page) {
-    String idRegex = IDPattern.GRAY_MADONNA;
+    String idRegex = IDPattern.MAKE_SHOP;
 
     HtmlParseData data = (HtmlParseData) page.getParseData();
 
     Pattern idPattern = Pattern.compile(idRegex);
-    Pattern urlPattern = Pattern.compile(String.format(URLPattern.URL_AND_ID, idRegex));
+    Pattern urlPattern = Pattern.compile(String.format(URLPattern.MAKE_SHOP, idRegex));
 
     Document doc = Jsoup.parse(data.getHtml());
     Elements elements = doc.select(".item-wrap>.item-cont>.item-list");

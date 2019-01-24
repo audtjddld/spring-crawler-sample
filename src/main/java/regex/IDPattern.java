@@ -1,5 +1,5 @@
 package regex;
 
 public class IDPattern {
-  public static String GRAY_MADONNA = "(branduid=([0-9]+))";
+  public static String MAKE_SHOP = "(branduid=([0-9]+))";
 }

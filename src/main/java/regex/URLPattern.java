@@ -1,5 +1,5 @@
 package regex;
 
 public class URLPattern {
-  public static String URL_AND_ID= "^(https?):\\/\\/([^:\\/\\s]+)(:([^\\/]*))?((\\/[^\\s/\\/]+)*)?\\/?%s";
+  public static String MAKE_SHOP = "^(https?):\\/\\/([^:\\/\\s]+)(:([^\\/]*))?((\\/[^\\s/\\/]+)*)?\\/?(branduid=([0-9]+))";
 }

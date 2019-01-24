@@ -107,17 +107,17 @@ public class MakeShopCrawler extends WebCrawler {
     URL url = new URL(webURL.getParentUrl(), webURL.getPath());
     String id = regexGenerator.generateId(webURL.toString());
 
-    String newUrl =  url.getCombineUrl() + "?branduid=" + id;
+    String newURL =  url.getCombineURL() + "?branduid=" + id;
 
-    if (urls.contains(newUrl)) {
+    if (urls.contains(newURL)) {
       return;
     }
 
-    urls.add(newUrl);
+    urls.add(newURL);
 
     Product product = new Product();
     product.setId(id);
-    product.setLink(newUrl);
+    product.setLink(newURL);
     product.setTitle(doc.select("h3.tit-prd").text());
     product.setPrice(new Price(doc.select("input[name='price']").attr("value")));
     product.setImageLink(url.getHost() + doc.select("div.thumb-wrap>.thumb img").attr("src"));

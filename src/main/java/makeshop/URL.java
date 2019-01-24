@@ -4,10 +4,10 @@ public class URL {
 
   private String host;
   private String subURL;
-  private String combineUrl;
 
   public URL(String parentUrl, String subUrl) {
-    this.host = parentUrl.substring(0, parentUrl.length()-1);
+    //this.host = parentUrl.substring(0, parentUrl.length()-1);
+    this.host = parentUrl;
     this.subURL = subUrl;
   }
 

@@ -35,13 +35,12 @@ public class MakeShopCrawler extends WebCrawler {
 
   @Override
   public boolean shouldVisit(Page referringPage, WebURL url) {
-    String href = url.getURL();
-
-    if (!href.contains("/shop/shopdetail.html")) {
+    if (!url.getPath().startsWith("/shop/shopdetail.html")) {
       return false;
     }
 
     if (categoryMap.size() == 0) {
+      String href = url.getURL();
       Document document = null;
       try {
         document = Jsoup.connect(href).get();
@@ -104,7 +103,7 @@ public class MakeShopCrawler extends WebCrawler {
 
     // 2. 중복 체크
     RegexGenerator regexGenerator = new RegexGenerator(IDPattern.MAKE_SHOP, URLPattern.MAKE_SHOP, CategoryPattern.MAKE_SHOP);
-    URL url = new URL(webURL.getParentUrl(), webURL.getPath());
+    URL url = new URL("http://" + webURL.getDomain(), webURL.getPath());
     String id = regexGenerator.generateId(webURL.toString());
 
     String newUrl =  url.getCombineUrl() + "?branduid=" + id;
@@ -118,7 +117,7 @@ public class MakeShopCrawler extends WebCrawler {
     Product product = new Product();
     product.setId(id);
     product.setLink(newUrl);
-    product.setTitle(doc.select("h3.tit-prd").text());
+    product.setTitle(doc.select("div.info h3").text());
     product.setPrice(new Price(doc.select("input[name='price']").attr("value")));
     product.setImageLink(url.getHost() + doc.select("div.thumb-wrap>.thumb img").attr("src"));
     product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(webURL.toString())));

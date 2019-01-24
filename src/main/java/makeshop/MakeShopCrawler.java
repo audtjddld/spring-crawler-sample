@@ -35,34 +35,11 @@ public class MakeShopCrawler extends WebCrawler {
 
   @Override
   public boolean shouldVisit(Page referringPage, WebURL url) {
-    if (!url.getPath().startsWith("/shop/shopdetail.html")) {
+    if (!url.getPath().startsWith("/shop/shopdetail.html") && !url.getPath().startsWith("/shop/shopbrand.html")) {
       return false;
     }
 
-    if (categoryMap.size() == 0) {
-      String href = url.getURL();
-      Document document = null;
-      try {
-        document = Jsoup.connect(href).get();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      Pattern pattern = Pattern.compile("(xcode=([0-9]+))");
-      Matcher codeMatcher;
-      Elements elements = document.select("a[href^=/shop/shopbrand.html]");
-      for (Element el : elements) {
-        //System.out.println(el);
-        if (!Strings.isNullOrEmpty(el.text()) && el.attr("href").indexOf("mcode") <= 0) {
-          String link = el.attr("href");
-          codeMatcher = pattern.matcher(link);
-          String key = codeMatcher.find() ? codeMatcher.group(2) : "Crawling";
-          String categoryName = el.text();
-          categoryMap.put(key, categoryName);
-        }
-      }
-      logger.info("category map : {}", categoryMap);
-    }
+    collectCategory(url);
 
     return true;
   }
@@ -87,13 +64,14 @@ public class MakeShopCrawler extends WebCrawler {
     // 1. 품절 체크
     // 변경되는 부분 품절 체크 타겟 정보
     /**/
-    Elements element = doc.select("div.prd-btns>a");
+    Elements element = doc.select("div.prd-btns a");
     if (element.size() == 0) {
-      logger.error("품절상품 입니다.");
+      logger.debug("품절상품 입니다.");
       return;
     }
     /**/
     /*
+    // 허닭 용
     Elements element = doc.select("div.box-buy-btns>ul");
     if (element.size() == 0) {
       logger.error("품절상품 입니다.");
@@ -122,6 +100,38 @@ public class MakeShopCrawler extends WebCrawler {
     product.setImageLink(url.getHost() + doc.select("div.thumb-wrap>.thumb img").attr("src"));
     product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(webURL.toString())));
 
-    logger.info("{}", product);
+    //logger.info("{}", product);
+    System.out.println(product.toString());
+  }
+
+  /**
+   * 상품에 맵핑 시키기 위한 카테고리 정보를 생성한다.
+   * @param url
+   */
+  private void collectCategory(WebURL url) {
+    if (categoryMap.size() == 0) {
+      String href = url.getURL();
+      Document document = null;
+      try {
+        document = Jsoup.connect(href).get();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      Pattern pattern = Pattern.compile("(xcode=([0-9]+))");
+      Matcher codeMatcher;
+      Elements elements = document.select("a[href^=/shop/shopbrand.html]");
+      for (Element el : elements) {
+        //System.out.println(el);
+        if (!Strings.isNullOrEmpty(el.text()) && el.attr("href").indexOf("mcode") <= 0) {
+          String link = el.attr("href");
+          codeMatcher = pattern.matcher(link);
+          String key = codeMatcher.find() ? codeMatcher.group(2) : "Crawling";
+          String categoryName = el.text();
+          categoryMap.put(key, categoryName);
+        }
+      }
+      logger.info("category map : {}", categoryMap);
+    }
   }
 }

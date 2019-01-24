@@ -43,6 +43,10 @@ public class Product {
   }
 
   public void setCategoryName1(String categoryName1) {
+    if (categoryName1 == null) {
+      this.categoryName1 = "CRAWLING";
+      return;
+    }
     this.categoryName1 = categoryName1;
   }
 

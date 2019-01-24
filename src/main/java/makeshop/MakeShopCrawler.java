@@ -86,11 +86,21 @@ public class MakeShopCrawler extends WebCrawler {
     // 품절 체크 div.prd-btns에 버튼이 없으면 품절.
 
     // 1. 품절 체크
-    Elements element = doc.select("div.prd-btns");
+    // 변경되는 부분 품절 체크 타겟 정보
+    /**/
+    Elements element = doc.select("div.prd-btns>a");
     if (element.size() == 0) {
       logger.error("품절상품 입니다.");
       return;
     }
+    /**/
+    /*
+    Elements element = doc.select("div.box-buy-btns>ul");
+    if (element.size() == 0) {
+      logger.error("품절상품 입니다.");
+      return;
+    }
+    */
 
     // 2. 중복 체크
     RegexGenerator regexGenerator = new RegexGenerator(IDPattern.MAKE_SHOP, URLPattern.MAKE_SHOP, CategoryPattern.MAKE_SHOP);
@@ -110,7 +120,7 @@ public class MakeShopCrawler extends WebCrawler {
     product.setLink(newUrl);
     product.setTitle(doc.select("h3.tit-prd").text());
     product.setPrice(new Price(doc.select("input[name='price']").attr("value")));
-    product.setImageLink(url.getHost() + doc.select("div.thumb>img").attr("src"));
+    product.setImageLink(url.getHost() + doc.select("div.thumb-wrap>.thumb img").attr("src"));
     product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(webURL.toString())));
 
     logger.info("{}", product);

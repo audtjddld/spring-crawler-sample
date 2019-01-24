@@ -22,9 +22,10 @@ public class MakeShopMain {
     RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
     RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
     CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-    controller.addSeed("http://www.graymadonna.com");
-
-    //TODO category를 먼저 뽑는다. 1depth
+//    controller.addSeed("http://www.graymadonna.com");
+    //controller.addSeed("http://www.heodak.com/");
+//    controller.addSeed("http://www.ccoma-i.com");
+    controller.addSeed("http://www.gozip28.com/");
 
     controller.start(MakeShopCrawler.class, numberOfSrawlers);
 

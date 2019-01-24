@@ -25,8 +25,6 @@ import regex.URLPattern;
 
 public class MakeShopCrawler extends WebCrawler {
 
-  private String host = "http://www.graymadonna.com";
-
   // 중복 URL 수집 불가
   private Set<String> urls = new HashSet<>();
   private Map<String, String> categoryMap = new HashMap<>();
@@ -38,6 +36,10 @@ public class MakeShopCrawler extends WebCrawler {
   @Override
   public boolean shouldVisit(Page referringPage, WebURL url) {
     String href = url.getURL();
+
+    if (!href.contains("/shop/shopdetail.html")) {
+      return false;
+    }
 
     if (categoryMap.size() == 0) {
       Document document = null;
@@ -60,19 +62,20 @@ public class MakeShopCrawler extends WebCrawler {
           categoryMap.put(key, categoryName);
         }
       }
+      logger.info("category map : {}", categoryMap);
     }
-    return href.startsWith(host + "/shop/shopdetail.html");
+
+    return true;
   }
 
   @Override
   public void visit(Page page) {
     HtmlParseData data = (HtmlParseData) page.getParseData();
 
-    logger.info("page url : {}", page.getWebURL());
+    logger.debug("page url : {}", page.getWebURL().getParentUrl());
+    WebURL webURL = page.getWebURL();
 
     Document doc = Jsoup.parse(data.getHtml());
-
-    //Elements elements = doc.select("form[name='form1']>input[type='hidden']");
 
     // branduid   상품 ID
     // xcode      카테고리 ID
@@ -91,50 +94,25 @@ public class MakeShopCrawler extends WebCrawler {
 
     // 2. 중복 체크
     RegexGenerator regexGenerator = new RegexGenerator(IDPattern.MAKE_SHOP, URLPattern.MAKE_SHOP, CategoryPattern.MAKE_SHOP);
-    String url = page.getWebURL().toString();
-    if (urls.contains(regexGenerator.generateUrl(url))) {
+    URL url = new URL(webURL.getParentUrl(), webURL.getPath());
+    String id = regexGenerator.generateId(webURL.toString());
+
+    String newUrl =  url.getCombineUrl() + "?branduid=" + id;
+
+    if (urls.contains(newUrl)) {
       return;
     }
 
-    urls.add(regexGenerator.generateUrl(url));
+    urls.add(newUrl);
 
     Product product = new Product();
-    product.setId(regexGenerator.generateId(url));
-    product.setLink(regexGenerator.generateUrl(url));
+    product.setId(id);
+    product.setLink(newUrl);
     product.setTitle(doc.select("h3.tit-prd").text());
-    product.setPrice(new Price(doc.select("input[name='price']").text()));
-    product.setImageLink(doc.select("div.thum>img").attr("href"));
-    product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(url)));
+    product.setPrice(new Price(doc.select("input[name='price']").attr("value")));
+    product.setImageLink(url.getHost() + doc.select("div.thumb>img").attr("src"));
+    product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(webURL.toString())));
 
     logger.info("{}", product);
   }
-
-
-   /*/
-  public static void main(String[] args) throws IOException {
-    // ^(https?):\/\/([^:\/\s]+)(:([^\/]*))?((\/[^\s/\/]+)*)?\/?%s
-    // (branduid=([0-9]+))
-    Document doc = Jsoup.connect("http://www.graymadonna.com").get();
-    Pattern pattern = Pattern.compile("(xcode=([0-9]+))");
-    Matcher codeMatcher;
-    Elements elements = doc.select("a[href^=/shop/shopbrand.html]");
-    for (Element el : elements) {
-      //System.out.println(el);
-      if (!Strings.isNullOrEmpty(el.text()) && el.attr("href").indexOf("mcode") <= 0) {
-        String link = el.attr("href");
-        codeMatcher = pattern.matcher(link);
-        String code = codeMatcher.find() ? codeMatcher.group(2) : "Crawling";
-        String categoryName = el.text();
-        System.out.println("code : " + code + ", " + categoryName);
-      }
-    }
-
-    String url = "/shop/shopbrand.html?xcode=001&type=X&mcode=001";
-
-    Pattern pattern = Pattern.compile("^(:([^\\/]*))?((\\/[^\\s/\\/]+)*)?\\/?(xcode=([0-9]+))");
-    Matcher matcher = pattern.matcher(url);
-
-    System.out.println(matcher.find() ? matcher.group() : "없음");
-  }
-  /**/
 }

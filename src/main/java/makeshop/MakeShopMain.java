@@ -14,7 +14,7 @@ public class MakeShopMain {
     int numberOfSrawlers = 1;
     CrawlConfig config = new CrawlConfig();
     // depth 가 곧 page number 수 이동도 연관된 것 같다.
-    config.setMaxDepthOfCrawling(15);
+    config.setMaxDepthOfCrawling(3);
     config.setCrawlStorageFolder("~/git/javatest/backup");
     config.setUserAgentString("sample-crawler");
     config.setPolitenessDelay(1500);
@@ -23,9 +23,9 @@ public class MakeShopMain {
     RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
     RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
     CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-    controller.addSeed("http://www.ccoma-i.com");
+//    controller.addSeed("http://www.ccoma-i.com");
 
-//    controller.addSeed("http://www.bnbshop.co.kr");
+    controller.addSeed("http://www.bnbshop.co.kr");
     Instant start = Instant.now();
     controller.start(MakeShopCrawler.class, numberOfSrawlers);
     Instant end = Instant.now();

@@ -95,7 +95,6 @@ public class MakeShopCrawler extends WebCrawler {
           try {
             jobQueue.enqueue(new Target(Hosting.MAKESHOP, "http://" + domain, matcher.group(), categoryMap));
           } catch (InterruptedException e1) {
-            e1.printStackTrace();
             Thread.currentThread().interrupt();
           }
           urls.add(matcher.group());

@@ -60,6 +60,7 @@ public class MakeShopCrawler extends WebCrawler {
     if (preventURLs.contains(url.getURL())) {
       return false;
     }
+
     preventURLs.add(url.getURL());
 
     return url.getPath().startsWith("/shop/shopbrand.html");

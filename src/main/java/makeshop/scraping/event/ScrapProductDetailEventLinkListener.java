@@ -44,7 +44,8 @@ public class ScrapProductDetailEventLinkListener {
       }
 
       LOG.info("link : {}, category: {}, id : {}", regexGenerator.generateLink(), regexGenerator.generateCategory(), regexGenerator.generateId());
-
+      //TODO 상세 링크 이동 후 수집
+      //TODO event나 별도 서버로 전송
     });
   }
 }

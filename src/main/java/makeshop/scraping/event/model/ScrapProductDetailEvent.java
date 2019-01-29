@@ -19,4 +19,12 @@ public class ScrapProductDetailEvent {
   public Map<String, String> getCategoryMap() {
     return categoryMap;
   }
+
+  @Override
+  public String toString() {
+    return "ScrapProductDetailEvent{" +
+        "url='" + url + '\'' +
+        ", categoryMap=" + categoryMap +
+        '}';
+  }
 }

@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import makeshop.scraping.event.model.ScrapProductDetailEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,9 @@ public class ScrapProductDetailEventListener {
     previousVisitURLs = new HashSet<>();
   }
 
+  //TODO detail page link 분리 후 detail page 내 form tag의 정보를 크롤링
   @Subscribe
-  public void scrap(String event) throws IOException {
+  public void scrap(ScrapProductDetailEvent event) throws IOException {
     LOG.info("{}", event);
 
     //Document doc = Jsoup.connect(event).get();

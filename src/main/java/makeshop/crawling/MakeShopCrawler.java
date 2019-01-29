@@ -1,7 +1,7 @@
 package makeshop.crawling;
 
 import com.google.common.base.Strings;
-import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.AsyncEventBus;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import makeshop.scraping.MakeShopProductListScrap;
-import makeshop.scraping.event.ScrapProductDetailEventListener;
-import makeshop.scraping.event.model.ScrapProductDetailEvent;
+import makeshop.scraping.event.ScrapProductDetailEventLinkListener;
+import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,14 +30,14 @@ public class MakeShopCrawler extends WebCrawler {
   private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
-  private EventBus eventBus;
+  private AsyncEventBus eventBus;
 
 
   public MakeShopCrawler() {
     logger.info("new");
     makeShopProductListScrap = new MakeShopProductListScrap();
-    eventBus = new EventBus();
-    eventBus.register(new ScrapProductDetailEventListener());
+    eventBus = new AsyncEventBus(Executors.newFixedThreadPool(4));
+    eventBus.register(new ScrapProductDetailEventLinkListener());
   }
 
   @Override
@@ -80,14 +81,10 @@ public class MakeShopCrawler extends WebCrawler {
       String href = e.attr("href");
       makeShopProductListScrap.matcher(href);
       if (makeShopProductListScrap.find()) {
-        String url = makeShopProductListScrap.group();
-        if (!menuURLs.contains(url)) {
-          // 페이지 detail link 추출.
-//          logger.info("visit : {}", url);
-          // queue 저장.
-          menuURLs.add(url);
-          // detail page 링크 파싱 후 처리.
-          eventBus.post(new ScrapProductDetailEvent("http://" + domain, categoryMap));
+        String link = makeShopProductListScrap.group();
+        if (!menuURLs.contains(link)) {
+          menuURLs.add(link);
+          eventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
         }
       }
     });

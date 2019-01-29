@@ -1,40 +1,43 @@
-package makeshop;
+package makeshop.crawling;
 
 import com.google.common.base.Strings;
-import common.Price;
-import common.Product;
+import com.google.common.eventbus.AsyncEventBus;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import makeshop.scraping.MakeShopProductListScrap;
+import makeshop.scraping.event.ScrapProductDetailEventLinkListener;
+import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import regex.CategoryPattern;
-import regex.IDPattern;
-import regex.RegexGenerator;
-import regex.URLPattern;
 
 public class MakeShopCrawler extends WebCrawler {
 
   // 중복 URL 수집 불가
-  private Set<String> urls = new HashSet<>();
-  private List<String> permitURLs = new ArrayList<>();
+  private Set<String> menuURLs = new HashSet<>();
+  private Set<String> preventURLs = new HashSet<>();
   private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
+  private MakeShopProductListScrap makeShopProductListScrap;
+  private AsyncEventBus eventBus;
+
 
   public MakeShopCrawler() {
     logger.info("new");
+    makeShopProductListScrap = new MakeShopProductListScrap();
+    eventBus = new AsyncEventBus(Executors.newFixedThreadPool(4));
+    eventBus.register(new ScrapProductDetailEventLinkListener());
   }
 
   @Override
@@ -44,65 +47,48 @@ public class MakeShopCrawler extends WebCrawler {
       domain = referringPage.getWebURL().getDomain();
       logger.info("domain : {}", domain);
     }
-    //logger.info("url : {}", url.toString());
+
     if (!url.getDomain().equals(domain)) {
       return false;
     }
-    if (!url.getPath().startsWith("/shop/shopdetail.html") && permitURLs.stream().noneMatch(u -> u.startsWith(url.getPath()))) {
+
+    if (categoryMap.size() == 0) {
+      collectCategory(referringPage);
+      return true;
+    }
+
+    if (preventURLs.contains(url.getURL())) {
       return false;
     }
-    collectCategory(referringPage);
-//    logger.info("shouldVisit : {}", url.toString());
-    return true;
+
+    preventURLs.add(url.getURL());
+
+    return url.getPath().startsWith("/shop/shopbrand.html");
   }
 
   @Override
   public void visit(Page page) {
+
+    // html 파싱
     HtmlParseData data = (HtmlParseData) page.getParseData();
+    Document document = Jsoup.parse(data.getHtml());
 
-    WebURL webURL = page.getWebURL();
-    Document doc = Jsoup.parse(data.getHtml());
+    // 페이지 링크 및 detail page를 추출한다.
+    Elements elements = document.select("a[href^=/shop/shopbrand.html]");
 
-    // 1. 품절 체크
-    // 변경되는 부분 품절 체크 타겟 정보
-    /**/
-    Elements element = doc.select("div.prd-btns a");
-    if (element.size() == 0) {
-      logger.debug("품절상품 입니다.");
-      return;
-    }
-    /**/
-    /*
-    // 허닭 용
-    Elements element = doc.select("div.box-buy-btns>ul");
-    if (element.size() == 0) {
-      logger.error("품절상품 입니다.");
-      return;
-    }
-    */
-
-    // 2. 중복 체크
-    RegexGenerator regexGenerator = new RegexGenerator(IDPattern.MAKE_SHOP, URLPattern.MAKE_SHOP, CategoryPattern.MAKE_SHOP);
-    URL url = new URL("http://" + webURL.getDomain(), webURL.getPath());
-    String id = regexGenerator.generateId(webURL.toString());
-
-    String newURL = url.getCombineURL() + "?branduid=" + id;
-
-    if (urls.contains(newURL)) {
-      return;
-    }
-//    logger.info("visit : {}", webURL.toString());
-    urls.add(newURL);
-
-    Product product = new Product();
-    product.setId(id);
-    product.setLink(newURL);
-    product.setTitle(doc.select("h3.tit-prd").text());
-    product.setPrice(new Price(doc.select("input[name='price']").attr("value")));
-    product.setImageLink(url.getHost() + doc.select("div.thumb-wrap>.thumb img").attr("src"));
-    product.setCategoryName1(categoryMap.get(regexGenerator.generateCategory(webURL.toString())));
-
-    System.out.println(product.toString());
+    //logger.info("visit url : {}", url);
+    String domain = page.getWebURL().getDomain();
+    elements.forEach(e -> {
+      String href = e.attr("href");
+      makeShopProductListScrap.matcher(href);
+      if (makeShopProductListScrap.find()) {
+        String link = makeShopProductListScrap.group();
+        if (!menuURLs.contains(link)) {
+          menuURLs.add(link);
+          eventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
+        }
+      }
+    });
   }
 
   /**
@@ -133,11 +119,9 @@ public class MakeShopCrawler extends WebCrawler {
             String key = codeMatcher.find() ? codeMatcher.group(2) : "Crawling";
             String categoryName = el.text();
             categoryMap.put(key, categoryName);
-            permitURLs.add(link);
           }
         }
         logger.info("category map : {}", categoryMap);
-        logger.info("permitURLs : {}", permitURLs);
       }
     }
   }

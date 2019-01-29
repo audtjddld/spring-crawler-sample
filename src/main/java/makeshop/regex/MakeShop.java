@@ -1,6 +1,7 @@
 package makeshop.regex;
 
 public class MakeShop {
+
   public static String MAKE_SHOP = "^(https?):\\/\\/([^:\\/\\s]+)(:([^\\/]*))?((\\/[^\\s/\\/]+)*)?\\/?(branduid=([0-9]+))";
   public static final String MAKE_SHOP_PAGE_REGEX = "/shop/shopbrand.html\\?type=(X|Y)&xcode=([0-9]{3})&mcode=([0-9]{3})&sort=&page=([0-9]{0,3})";
 

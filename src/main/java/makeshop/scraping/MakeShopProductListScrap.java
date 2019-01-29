@@ -15,7 +15,7 @@ public class MakeShopProductListScrap {
   }
 
   public void matcher(String text) {
-    this.matcher =  pattern.matcher(text);
+    this.matcher = pattern.matcher(text);
   }
 
   public boolean find() {

@@ -32,7 +32,6 @@ public class MakeShopMain {
     // crawler start
     controller.start(MakeShopCrawler.class, numberOfSrawlers);
 
-
     Instant end = Instant.now();
     System.out.println(Duration.between(start, end));
   }

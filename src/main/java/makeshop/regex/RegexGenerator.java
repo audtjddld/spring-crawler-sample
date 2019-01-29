@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
  * 정규식을 이용한 생성기
  */
 public class RegexGenerator {
+
   private Pattern idPattern;
   private Pattern urlPattern;
   private Pattern categoryPattern;

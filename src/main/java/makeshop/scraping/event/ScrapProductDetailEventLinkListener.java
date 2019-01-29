@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import makeshop.regex.RegexGenerator;
 import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
 import org.jsoup.Jsoup;
@@ -25,23 +26,27 @@ public class ScrapProductDetailEventLinkListener {
 
   //TODO detail page link 분리 후 detail page 내 form tag의 정보를 크롤링
   @Subscribe
-  public void scrap(ScrapProductDetailLinkEvent event) throws IOException {
-    LOG.info("{} : {}", Thread.currentThread().getName(), event.getFullURL());
+  public void scrap(ScrapProductDetailLinkEvent event) throws IOException, InterruptedException {
+//    LOG.info("{} : {}", Thread.currentThread().getName(), event.getFullURL());
+
+    TimeUnit.MILLISECONDS.sleep(1500);
 
     Document doc = Jsoup.connect(event.getFullURL()).get();
 
     Elements elements = doc.select("a[href^=/shop/shopdetail.html]");
     elements.forEach(e -> {
       String link = String.format("http://%s%s", event.getDomain(), e.attr("href"));
-      LOG.info("link : {}", link);
+      //LOG.info("link : {}", link);
       regexGenerator.setLink(link);
 
       String filterLink = regexGenerator.generateLink();
-      LOG.info("filter link : {}", filterLink);
+      //LOG.info("filter link : {}", filterLink);
 
       if (previousVisitURLs.contains(filterLink)) {
         return;
       }
+
+      previousVisitURLs.add(filterLink);
 
       LOG.info("link : {}, category: {}, id : {}", regexGenerator.generateLink(), regexGenerator.generateCategory(), regexGenerator.generateId());
       //TODO 상세 링크 이동 후 수집

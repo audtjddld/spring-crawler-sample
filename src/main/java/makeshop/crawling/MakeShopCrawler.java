@@ -1,11 +1,7 @@
-package makeshop;
-
-import static regex.MakeShop.MAKE_SHOP_PAGE_REGEX;
+package makeshop.crawling;
 
 import com.google.common.base.Strings;
-import common.Hosting;
-import common.JobQueue;
-import common.Target;
+import com.google.common.eventbus.EventBus;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -17,6 +13,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import makeshop.scraping.event.ScrapProductDetailEventListener;
+import makeshop.scraping.MakeShopProductListScrap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,18 +23,19 @@ import org.jsoup.select.Elements;
 public class MakeShopCrawler extends WebCrawler {
 
   // 중복 URL 수집 불가
-  private Set<String> urls = new HashSet<>();
+  private Set<String> menuURLs = new HashSet<>();
   private Set<String> preventURLs = new HashSet<>();
-  private JobQueue jobQueue;
   private Map<String, String> categoryMap = new ConcurrentHashMap<>();
   private String domain;
-  private Pattern pattern;
-  private Matcher matcher = null;
+  private MakeShopProductListScrap makeShopProductListScrap;
+  private EventBus eventBus;
+
 
   public MakeShopCrawler() {
     logger.info("new");
-    pattern = Pattern.compile(MAKE_SHOP_PAGE_REGEX);
-    jobQueue = JobQueue.getInstance();
+    makeShopProductListScrap = new MakeShopProductListScrap();
+    eventBus = new EventBus();
+    eventBus.register(new ScrapProductDetailEventListener());
   }
 
   @Override
@@ -46,7 +45,7 @@ public class MakeShopCrawler extends WebCrawler {
       domain = referringPage.getWebURL().getDomain();
       logger.info("domain : {}", domain);
     }
-    //logger.info("url : {}", url.toString());
+
     if (!url.getDomain().equals(domain)) {
       return false;
     }
@@ -60,14 +59,6 @@ public class MakeShopCrawler extends WebCrawler {
       return false;
     }
     preventURLs.add(url.getURL());
-
-    /*
-    boolean result = permitURLs.stream().anyMatch(u -> url.getURL().contains(u));
-    if (result) {
-      logger.info("should visit : {}", url.getURL().split("/")[1]);
-    }
-    return result;
-    */
 
     return url.getPath().startsWith("/shop/shopbrand.html");
   }
@@ -86,18 +77,16 @@ public class MakeShopCrawler extends WebCrawler {
     String domain = page.getWebURL().getDomain();
     elements.forEach(e -> {
       String href = e.attr("href");
-      matcher = pattern.matcher(href);
-      if (matcher.find()) {
-        if (!urls.contains(matcher.group())) {
+      makeShopProductListScrap.matcher(href);
+      if (makeShopProductListScrap.find()) {
+        String url = makeShopProductListScrap.group();
+        if (!menuURLs.contains(url)) {
           // 페이지 detail link 추출.
-          logger.info("visit : {}", matcher.group());
+          logger.info("visit : {}", url);
           // queue 저장.
-          try {
-            jobQueue.enqueue(new Target(Hosting.MAKESHOP, "http://" + domain, matcher.group(), categoryMap));
-          } catch (InterruptedException e1) {
-            Thread.currentThread().interrupt();
-          }
-          urls.add(matcher.group());
+          menuURLs.add(url);
+          // detail page 링크 파싱 후 처리.
+          eventBus.post(url);
         }
       }
     });

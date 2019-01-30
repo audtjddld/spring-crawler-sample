@@ -30,4 +30,11 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
 
     compileOnly 'org.projectlombok:lombok:1.18.4'
+
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+
+// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: '3.141.59'
+
 }

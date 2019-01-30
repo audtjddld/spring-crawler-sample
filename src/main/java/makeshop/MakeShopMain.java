@@ -16,7 +16,6 @@ public class MakeShopMain {
   public static void main(String[] args) throws Exception {
     int numberOfSrawlers = 1;
     CrawlConfig config = new CrawlConfig();
-
     config.setMaxDepthOfCrawling(15); // depth 가 곧 page number 수 이동도 연관된 것 같다.
 
     config.setCrawlStorageFolder("~/git/javatest/backup");

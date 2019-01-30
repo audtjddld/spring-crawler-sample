@@ -31,7 +31,7 @@ public class ScrapProductEventListener {
     //    log.info("link : {}", event.getLink());
 
     String link = event.getLink();
-    String price = document.select("input[name='price']").attr("v0alue");
+    String price = document.select("input[name='price']").attr("value");
     Product product = Product.builder()
         .id(event.getId())
         .categoryName1(event.getCategory())

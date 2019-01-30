@@ -35,7 +35,9 @@ public class ScrapProductDetailEventLinkListener {
 
     TimeUnit.MILLISECONDS.sleep(1500);
 
-    Document doc = Jsoup.connect(event.getFullURL()).get();
+    Document doc = Jsoup.connect(event.getFullURL())
+        .userAgent("SampleCrawler")
+        .get();
 
     Elements elements = doc.select("a[href^=/shop/shopdetail.html]");
     elements.forEach(e -> {
@@ -54,7 +56,7 @@ public class ScrapProductDetailEventLinkListener {
 
       //log.info("link : {}, category: {}, id : {}", regexGenerator.generateLink(), regexGenerator.generateCategory(), regexGenerator.generateId());
 
-      asyncEventBus.post(new ScrapProductEvent(event.getDomain(),"a", regexGenerator.generateId(), regexGenerator.generateLink(), event.getCategoryMap().get(regexGenerator.generateCategory())));
+      asyncEventBus.post(new ScrapProductEvent(event.getDomain(), "a", regexGenerator.generateId(), regexGenerator.generateLink(), event.getCategoryMap().get(regexGenerator.generateCategory())));
 
     });
   }

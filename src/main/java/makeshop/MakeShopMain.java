@@ -42,6 +42,6 @@ public class MakeShopMain {
 
     Instant end = Instant.now();
     System.out.println(Duration.between(start, end));
-    exit(0);
+//    exit(0);
   }
 }

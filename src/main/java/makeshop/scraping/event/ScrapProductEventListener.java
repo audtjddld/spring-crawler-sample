@@ -18,7 +18,9 @@ public class ScrapProductEventListener {
   public void scrapProduct(ScrapProductEvent event) throws InterruptedException, IOException {
     TimeUnit.SECONDS.sleep(1);
 
-    Document document = Jsoup.connect(event.getLink()).get();
+    Document document = Jsoup.connect(event.getLink())
+        .userAgent("SampleCrawler")
+        .get();
 
     //FIXME javascript 정규식으로 추출 예정.
     Elements element = document.select("div.prd-btns a");
@@ -26,16 +28,15 @@ public class ScrapProductEventListener {
       log.info("품절상품 입니다.");
       return;
     }
-
-//    log.info("link : {}", event.getLink());
+    //    log.info("link : {}", event.getLink());
 
     String link = event.getLink();
-    String price = document.select("input[name='price']").attr("value");
+    String price = document.select("input[name='price']").attr("v0alue");
     Product product = Product.builder()
         .id(event.getId())
         .categoryName1(event.getCategory())
         .link(link)
-        .title(document.select("h3.tit-prd").text())
+        .title(document.select("form[name='form1'] h3").text())
         .mobileLink(link)
         .imageLink("http://" + event.getDomain() + document.select("div.thumb-wrap>.thumb img").attr("src"))
         .price(new Price(price))

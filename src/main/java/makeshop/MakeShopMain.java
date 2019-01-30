@@ -1,7 +1,5 @@
 package makeshop;
 
-import static java.lang.System.exit;
-
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -28,12 +26,13 @@ public class MakeShopMain {
     RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
     CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-    //controller.addSeed("http://www.bnbshop.co.kr");
+    controller.addSeed("http://www.bnbshop.co.kr");
     //    controller.addSeed("http://www.graymadonna.com/");
-    //    controller.addSeed("http://www.heodak.com/");
-    //    controller.addSeed("http://www.ccoma-i.com");
+//        controller.addSeed("http://www.heodak.com/");
+//        controller.addSeed("http://www.ccoma-i.com");
     //    controller.addSeed("http://www.gozip28.com");
-    controller.addSeed("http://www.paulnjoy.com");
+    //controller.addSeed("http://www.paulnjoy.com");
+//    controller.addSeed("http://www.timemecca.co.kr");
 
     Instant start = Instant.now();
 

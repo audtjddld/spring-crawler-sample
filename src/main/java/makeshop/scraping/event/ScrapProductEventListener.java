@@ -14,6 +14,9 @@ import org.jsoup.select.Elements;
 @Slf4j
 public class ScrapProductEventListener {
 
+  private String btnArea = "div.prd-btns a";
+  private String imageArea = "div.thumb-wrap>.thumb img";
+
   @Subscribe
   public void scrapProduct(ScrapProductEvent event) throws InterruptedException, IOException {
     TimeUnit.SECONDS.sleep(1);
@@ -23,22 +26,27 @@ public class ScrapProductEventListener {
         .get();
 
     //FIXME javascript 정규식으로 추출 예정.
-    Elements element = document.select("div.prd-btns a");
+    // 변경되는 지점 : 버튼 영역
+    Elements element = document.select(btnArea);
     if (element.size() == 0) {
-      log.info("품절상품 입니다.");
+      log.info("품절상품 입니다. {}", event.getLink());
       return;
     }
     //    log.info("link : {}", event.getLink());
 
     String link = event.getLink();
     String price = document.select("input[name='price']").attr("value");
+    // 변경되는 지점 : 이미지 링크 위치
+    String imageLink = document.select(imageArea).attr("src");
+    imageLink = imageLink.startsWith("http") ? imageLink : "http://" + event.getDomain() + imageLink;
+
     Product product = Product.builder()
         .id(event.getId())
         .categoryName1(event.getCategory())
         .link(link)
         .title(document.select("form[name='form1'] h3").text())
         .mobileLink(link)
-        .imageLink("http://" + event.getDomain() + document.select("div.thumb-wrap>.thumb img").attr("src"))
+        .imageLink(imageLink)
         .price(new Price(price))
         .mobilePrice(new Price(price))
         .normalPrice(new Price(price))

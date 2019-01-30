@@ -15,19 +15,20 @@ import org.openqa.selenium.chrome.ChromeOptions;
 @Slf4j
 public class ScrapProductEventListener {
 
+  private WebDriver webDriver;
+
   public ScrapProductEventListener() {
     System.setProperty("webdriver.chrome.driver", "/Users/we/Downloads/chromedriver");
     //System.setProperty("webdriver.chrome.verboseLogging", "true");
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("headless");
+    this.webDriver = new ChromeDriver(options);
   }
 
   @Subscribe
   public void scrapProduct(ScrapProductEvent event) throws InterruptedException, IOException {
     TimeUnit.SECONDS.sleep(1);
 
-    //    log.info("link : {}", event.getLink());
-    ChromeOptions options = new ChromeOptions();
-    options.addArguments("headless");
-    WebDriver webDriver = new ChromeDriver(options);
 
     webDriver.get(event.getLink());
 

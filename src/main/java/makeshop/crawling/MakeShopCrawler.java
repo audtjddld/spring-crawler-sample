@@ -2,6 +2,7 @@ package makeshop.crawling;
 
 import com.google.common.base.Strings;
 import com.google.common.eventbus.AsyncEventBus;
+import common.CrawlerEventBus;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -11,17 +12,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import makeshop.scraping.MakeShopProductListScrap;
-import makeshop.scraping.event.ScrapProductDetailEventLinkListener;
 import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+@Slf4j
 public class MakeShopCrawler extends WebCrawler {
 
   // 중복 URL 수집 불가
@@ -30,14 +31,13 @@ public class MakeShopCrawler extends WebCrawler {
   private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
-  private AsyncEventBus eventBus;
+  private AsyncEventBus asyncEventBus;
 
 
   public MakeShopCrawler() {
     logger.info("new");
     makeShopProductListScrap = new MakeShopProductListScrap();
-    eventBus = new AsyncEventBus(Executors.newFixedThreadPool(4));
-    eventBus.register(new ScrapProductDetailEventLinkListener());
+    asyncEventBus = CrawlerEventBus.getInstance();
   }
 
   @Override
@@ -85,7 +85,7 @@ public class MakeShopCrawler extends WebCrawler {
         String link = makeShopProductListScrap.group();
         if (!menuURLs.contains(link)) {
           menuURLs.add(link);
-          eventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
+          asyncEventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
         }
       }
     });

@@ -1,33 +1,37 @@
 package makeshop.scraping.event;
 
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
+import common.CrawlerEventBus;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import makeshop.regex.RegexGenerator;
 import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
+import makeshop.scraping.event.model.ScrapProductEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ScrapProductDetailEventLinkListener {
 
-  public static final Logger LOG = LoggerFactory.getLogger(ScrapProductDetailEventLinkListener.class);
   private RegexGenerator regexGenerator;
   private Set<String> previousVisitURLs;
+  private AsyncEventBus asyncEventBus;
 
   public ScrapProductDetailEventLinkListener() {
     previousVisitURLs = new HashSet<>();
     regexGenerator = new RegexGenerator();
+    asyncEventBus = CrawlerEventBus.getInstance();
   }
 
   //TODO detail page link 분리 후 detail page 내 form tag의 정보를 크롤링
   @Subscribe
   public void scrap(ScrapProductDetailLinkEvent event) throws IOException, InterruptedException {
-//    LOG.info("{} : {}", Thread.currentThread().getName(), event.getFullURL());
+    //    LOG.info("{} : {}", Thread.currentThread().getName(), event.getFullURL());
 
     TimeUnit.MILLISECONDS.sleep(1500);
 
@@ -48,9 +52,10 @@ public class ScrapProductDetailEventLinkListener {
 
       previousVisitURLs.add(filterLink);
 
-      LOG.info("link : {}, category: {}, id : {}", regexGenerator.generateLink(), regexGenerator.generateCategory(), regexGenerator.generateId());
-      //TODO 상세 링크 이동 후 수집
-      //TODO event나 별도 서버로 전송
+      //log.info("link : {}, category: {}, id : {}", regexGenerator.generateLink(), regexGenerator.generateCategory(), regexGenerator.generateId());
+
+      asyncEventBus.post(new ScrapProductEvent(event.getDomain(),"a", regexGenerator.generateId(), regexGenerator.generateLink(), event.getCategoryMap().get(regexGenerator.generateCategory())));
+
     });
   }
 }

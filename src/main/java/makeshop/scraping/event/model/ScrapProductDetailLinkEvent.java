@@ -1,7 +1,9 @@
 package makeshop.scraping.event.model;
 
 import java.util.Map;
+import lombok.ToString;
 
+@ToString
 public class ScrapProductDetailLinkEvent {
 
   private String domain;
@@ -24,13 +26,5 @@ public class ScrapProductDetailLinkEvent {
 
   public Map<String, String> getCategoryMap() {
     return categoryMap;
-  }
-
-  @Override
-  public String toString() {
-    return "ScrapProductDetailEvent{" +
-        "link='" + link + '\'' +
-        ", categoryMap=" + categoryMap +
-        '}';
   }
 }

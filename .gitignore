@@ -129,3 +129,9 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,gradle,intellij
+.gitignore
+build.gradle
+gradle/
+gradlew
+gradlew.bat
+settings.gradle

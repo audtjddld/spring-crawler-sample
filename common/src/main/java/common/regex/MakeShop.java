@@ -1,7 +1,4 @@
-package makeshop.regex;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package common.regex;
 
 public class MakeShop {
 
@@ -15,12 +12,4 @@ public class MakeShop {
 
   //private static final String SUB_REGEX = "(type=(X)|xcode=([0-9]{3})|mcode=([0-9]{3})|sort=|page=([0-9]{0,3}))";
   //public static final String MAKE_SHOP_PAGE_REGEX2 = "/shop/shopbrand.html\\?" + SUB_REGEX + "&" + SUB_REGEX + "&" + SUB_REGEX;
-  public static void main(String[] args) {
-    String link = "/shop/shopbrand.html?type=O&xcode=016&sort=&page=2";
-
-    Pattern pattern = Pattern.compile(MAKE_SHOP_PAGE_REGEX);
-    Matcher matcher = pattern.matcher(link);
-
-    System.out.println(matcher.find());
-  }
 }

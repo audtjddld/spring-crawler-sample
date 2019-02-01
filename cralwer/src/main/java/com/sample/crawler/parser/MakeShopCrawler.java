@@ -1,8 +1,7 @@
-package makeshop.crawling;
+package com.sample.crawler.parser;
+
 
 import com.google.common.base.Strings;
-import com.google.common.eventbus.AsyncEventBus;
-import common.CrawlerEventBus;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -15,8 +14,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import makeshop.scraping.MakeShopProductListScrap;
-import makeshop.scraping.event.model.ScrapProductDetailLinkEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,13 +28,10 @@ public class MakeShopCrawler extends WebCrawler {
   private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
-  private AsyncEventBus asyncEventBus;
-
 
   public MakeShopCrawler() {
     logger.info("new");
     makeShopProductListScrap = new MakeShopProductListScrap();
-    asyncEventBus = CrawlerEventBus.getInstance();
   }
 
   @Override
@@ -76,8 +70,8 @@ public class MakeShopCrawler extends WebCrawler {
     // 페이지 링크 및 detail page를 추출한다.
     Elements elements = document.select("a[href^=/shop/shopbrand.html]");
 
-    //logger.info("visit url : {}", url);
     String domain = page.getWebURL().getDomain();
+
     elements.forEach(e -> {
       String href = e.attr("href");
       makeShopProductListScrap.matcher(href);
@@ -85,7 +79,8 @@ public class MakeShopCrawler extends WebCrawler {
         String link = makeShopProductListScrap.group();
         if (!menuURLs.contains(link)) {
           menuURLs.add(link);
-          asyncEventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
+          //asyncEventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
+          //TODO kafka
         }
       }
     });
@@ -124,5 +119,27 @@ public class MakeShopCrawler extends WebCrawler {
         logger.info("category map : {}", categoryMap);
       }
     }
+  }
+}
+
+class MakeShopProductListScrap {
+
+  private Pattern pattern;
+  private Matcher matcher = null;
+
+  public MakeShopProductListScrap() {
+    pattern = Pattern.compile(MAKE_SHOP_PAGE_REGEX);
+  }
+
+  public void matcher(String text) {
+    this.matcher = pattern.matcher(text);
+  }
+
+  public boolean find() {
+    return this.matcher.find();
+  }
+
+  public String group() {
+    return this.matcher.group();
   }
 }

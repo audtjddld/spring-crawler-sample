@@ -1,2 +1,2 @@
-rootProject.name = 'sample-crawler'
-
+rootProject.name = 'crawler-sample'
+include 'cralwer', 'scraping', 'common'

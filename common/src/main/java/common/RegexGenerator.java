@@ -1,8 +1,9 @@
-package makeshop.regex;
+package common;
 
-import static makeshop.regex.MakeShop.BRAND_UID_REGEX;
-import static makeshop.regex.MakeShop.CATEGORY_REGEX;
-import static makeshop.regex.MakeShop.PRODUCT_LINK_REGEX;
+
+import static common.regex.MakeShop.BRAND_UID_REGEX;
+import static common.regex.MakeShop.CATEGORY_REGEX;
+import static common.regex.MakeShop.PRODUCT_LINK_REGEX;
 
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
@@ -13,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class RegexGenerator {
 
-  private Pattern idPattern;
+  protected Pattern idPattern;
   private Pattern linkPattern;
   private Pattern categoryPattern;
   private String link;

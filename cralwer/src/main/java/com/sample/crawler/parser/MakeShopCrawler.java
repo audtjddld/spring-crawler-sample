@@ -1,7 +1,10 @@
 package com.sample.crawler.parser;
 
 
+import static common.regex.MakeShop.MAKE_SHOP_PAGE_REGEX;
+
 import com.google.common.base.Strings;
+import com.sample.crawler.factory.CrawlerFactory;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -18,8 +21,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class MakeShopCrawler extends WebCrawler {
 
   // 중복 URL 수집 불가
@@ -29,9 +35,10 @@ public class MakeShopCrawler extends WebCrawler {
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
 
-  public MakeShopCrawler() {
-    logger.info("new");
-    makeShopProductListScrap = new MakeShopProductListScrap();
+  @Autowired
+  public MakeShopCrawler(CrawlerFactory crawlerFactory) {
+
+    this.makeShopProductListScrap = new MakeShopProductListScrap();
   }
 
   @Override

@@ -19,5 +19,4 @@ buildscript {
 dependencies {
 // https://mvnrepository.com/artifact/com.google.guava/guava
     compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
-
 }

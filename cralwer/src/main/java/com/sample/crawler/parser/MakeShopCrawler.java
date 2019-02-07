@@ -35,8 +35,7 @@ public class MakeShopCrawler extends WebCrawler {
   private MakeShopProductListScrap makeShopProductListScrap;
 
   @Autowired
-  public MakeShopCrawler(CrawlerFactory crawlerFactory) {
-
+  public MakeShopCrawler() {
     this.makeShopProductListScrap = new MakeShopProductListScrap();
   }
 
@@ -85,8 +84,8 @@ public class MakeShopCrawler extends WebCrawler {
         String link = makeShopProductListScrap.group();
         if (!menuURLs.contains(link)) {
           menuURLs.add(link);
-          //asyncEventBus.post(new ScrapProductDetailLinkEvent(domain, link, categoryMap));
-          //TODO kafka
+          log.info("link : {}", link);
+          //TODO another event
         }
       }
     });

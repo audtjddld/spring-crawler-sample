@@ -1,21 +1,14 @@
 package com.sample.common.company;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class Company {
 
   private CompanyId companyId;
   private Hosting type;
 
-  public Company(CompanyId companyId, Hosting type) {
-    this.companyId = companyId;
-    this.type = type;
-  }
-
-  public CompanyId getCompanyId() {
-    return companyId;
-  }
-
-  public Hosting getType() {
-    return type;
-  }
 }

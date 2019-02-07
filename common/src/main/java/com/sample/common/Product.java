@@ -1,7 +1,9 @@
 package com.sample.common;
 
-public class Product {
+import lombok.Builder;
 
+@Builder
+public class Product {
 
   private String id;
   private String title;

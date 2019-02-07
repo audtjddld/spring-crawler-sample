@@ -34,6 +34,12 @@
     <appender-ref ref="dailyRollingAppender"/>
   </logger>
 
+  <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="INFO" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="dailyRollingAppender"/>
+  </logger>
+
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>

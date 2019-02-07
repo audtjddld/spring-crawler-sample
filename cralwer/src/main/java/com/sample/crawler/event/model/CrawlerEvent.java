@@ -1,4 +1,4 @@
-package com.sample.crawler.event;
+package com.sample.crawler.event.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

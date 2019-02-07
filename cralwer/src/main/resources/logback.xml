@@ -1,0 +1,41 @@
+<configuration scan="true" scanPeriod="180 seconds">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>%date{yyyy-MM-dd:HH:mm:ss.SSS} %-5level %relative --- [%thread] %logger.%method\(%file:%line\) : %msg %n</Pattern>
+    </encoder>
+
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>TRACE</level>
+
+    </filter>
+  </appender>
+
+  <appender name="dailyRollingAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>crawler.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%date{yyyy-MM-dd:HH:mm:ss.SSS} %-5level %relative --- [%thread] %logger.%method\(%file:%line\) : %msg %n</Pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>crawler.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+      <maxHistory>7</maxHistory>
+    </rollingPolicy>
+  </appender>
+
+  <logger name="com.sample.crawler" level="INFO" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="dailyRollingAppender"/>
+  </logger>
+
+  <logger name="org.springframework" level="INFO" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="dailyRollingAppender"/>
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

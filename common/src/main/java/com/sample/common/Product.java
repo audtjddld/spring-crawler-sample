@@ -16,6 +16,9 @@ public class Product {
   private String imageLink;
 
   // "id\ttitle\tprice_pc\tprice_mobile\tnormal_price\tlink\tmobile_link\timage_link\tcategory_name1"
+  //asdfasdf
+
+  //qwerqwerqwer
   public String toString() {
     String TAB = "\t";
     StringBuilder sb = new StringBuilder();

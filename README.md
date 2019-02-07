@@ -22,7 +22,8 @@ jsoup = 스크래이핑
 
 [docker 기본 사용법](http://kkforgg.blog.me/221459908128)
 
-2. kafka , zookeeper docker image를 pull 받는다. 아래 링크 보고 따라할 것
+2. kafka , zookeeper docker image를 pull 받는다. 아래 링크 보고 따라할 것  
+
 [kafka docker 설치 링크](http://www.kwangsiklee.com/2017/03/docker-compose%EB%A1%9C-kafka%EB%A5%BC-%EB%A1%9C%EC%BB%AC%EC%97%90-%EB%9D%84%EC%9B%8C%EB%B3%B4%EC%9E%90/) 
 
 docker 실행 후 `docker-compose-single-broker.yml` 을 실행한다.
@@ -44,9 +45,4 @@ bin/kafka-topics.sh --list --zookeeper localhost:2181
 test
 ```
 topic list에 test가 나타나면 정상 셋팅 된 것이다.
-
-kafka를 셋팅 할 때 zookeeper cluster, kafka-cluster 등을 설정하는데 docker로 간편하게 설정할 수 있다.
-
-기본 생성되는 topic의 serialize , deserialize가 정확히 뭔지 모르기 때문에
-이때는 topic을 명령어로 생성한다.
 

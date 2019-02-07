@@ -3,6 +3,7 @@ package com.sample.crawler.event.listener;
 import com.sample.crawler.event.model.CrawlerEvent;
 import com.sample.crawler.factory.CrawlerFactory;
 import com.sample.crawler.factory.model.CrawlerInfo;
+import com.sample.crawler.parser.MakeShopCrawler;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.util.Asserts;
@@ -37,7 +38,7 @@ public class CrawlerEventListener {
     CrawlerInfo crawlerInfo = crawlerFactory.getCrawlerInfo(event.getPipeId());
 
     controller.addSeed(crawlerInfo.getSeedURL());
-    controller.start(crawlerInfo.getCrawler().getClass(), 1);
+    controller.start(crawlerInfo.getCrawler(), 1);
   }
 
 }

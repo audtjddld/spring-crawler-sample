@@ -3,7 +3,6 @@ package com.sample.crawler.parser;
 
 import com.google.common.base.Strings;
 import com.sample.common.regex.MakeShop;
-import com.sample.crawler.factory.CrawlerFactory;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -21,10 +20,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+/**
+ * 상품 리스트만 조회
+ */
 @Slf4j
-@Component
 public class MakeShopCrawler extends WebCrawler {
 
   // 중복 URL 수집 불가
@@ -82,10 +82,10 @@ public class MakeShopCrawler extends WebCrawler {
       makeShopProductListScrap.matcher(href);
       if (makeShopProductListScrap.find()) {
         String link = makeShopProductListScrap.group();
-        if (!menuURLs.contains(link)) {
+        if (!menuURLs.contains(link)) { // 중복 링크 제거
           menuURLs.add(link);
           log.info("link : {}", link);
-          //TODO another event
+          //TODO another event (detail link)
         }
       }
     });

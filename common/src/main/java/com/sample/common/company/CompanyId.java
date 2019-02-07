@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+@Deprecated
 public class CompanyId {
 
   private String pipeId;

@@ -1,14 +1,21 @@
 package com.sample.common.company;
 
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@AllArgsConstructor
+@ToString
 @Getter
+@Setter
 public class Company {
 
-  private CompanyId companyId;
+  @JsonProperty("companyId")
+  private String pipeId;
+  @JsonProperty("type")
   private Hosting type;
-
+  @JsonProperty("seedURL")
+  private String seedURL;
+  
 }

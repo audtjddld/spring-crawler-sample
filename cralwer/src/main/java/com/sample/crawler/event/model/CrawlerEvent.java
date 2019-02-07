@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CrawlerEvent {
+
   private Company company;
 }

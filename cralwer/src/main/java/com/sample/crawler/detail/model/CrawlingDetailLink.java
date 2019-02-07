@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class CrawlingDetailLink {
+
   private String domain;
   private String link;
   private Map<String, String> categoryMap;

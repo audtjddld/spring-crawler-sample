@@ -17,5 +17,5 @@ public class Company {
   private Hosting type;
   @JsonProperty("seedURL")
   private String seedURL;
-  
+
 }

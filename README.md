@@ -46,3 +46,9 @@ test
 ```
 topic list에 test가 나타나면 정상 셋팅 된 것이다.
 
+
+구동 후 로컬에서 다음과 같이 입력한다.
+
+```
+curl -d '{"companyId" :  "test", "type": "MAKESHOP", "seedURL" : "url" }' -H "Content-Type: application/json" -X POST http://localhost:9091/crawling
+```

@@ -1,4 +1,4 @@
-package common.regex;
+package com.sample.common.regex;
 
 public class MakeShop {
 

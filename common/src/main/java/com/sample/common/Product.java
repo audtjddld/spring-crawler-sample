@@ -1,8 +1,5 @@
-package common;
+package com.sample.common;
 
-import lombok.Builder;
-
-@Builder
 public class Product {
 
 

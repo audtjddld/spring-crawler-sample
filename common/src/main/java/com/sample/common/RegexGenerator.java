@@ -1,9 +1,9 @@
-package common;
+package com.sample.common;
 
 
-import static common.regex.MakeShop.BRAND_UID_REGEX;
-import static common.regex.MakeShop.CATEGORY_REGEX;
-import static common.regex.MakeShop.PRODUCT_LINK_REGEX;
+import static com.sample.common.regex.MakeShop.BRAND_UID_REGEX;
+import static com.sample.common.regex.MakeShop.CATEGORY_REGEX;
+import static com.sample.common.regex.MakeShop.PRODUCT_LINK_REGEX;
 
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;

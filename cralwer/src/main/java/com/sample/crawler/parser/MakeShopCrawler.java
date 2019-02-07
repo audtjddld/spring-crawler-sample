@@ -1,9 +1,8 @@
 package com.sample.crawler.parser;
 
 
-import static common.regex.MakeShop.MAKE_SHOP_PAGE_REGEX;
-
 import com.google.common.base.Strings;
+import com.sample.common.regex.MakeShop;
 import com.sample.crawler.factory.CrawlerFactory;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -135,7 +134,7 @@ class MakeShopProductListScrap {
   private Matcher matcher = null;
 
   public MakeShopProductListScrap() {
-    pattern = Pattern.compile(MAKE_SHOP_PAGE_REGEX);
+    pattern = Pattern.compile(MakeShop.MAKE_SHOP_PAGE_REGEX);
   }
 
   public void matcher(String text) {

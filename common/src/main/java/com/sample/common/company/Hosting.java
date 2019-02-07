@@ -1,4 +1,4 @@
-package common.company;
+package com.sample.common.company;
 
 public enum Hosting {
   MAKESHOP,

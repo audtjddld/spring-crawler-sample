@@ -19,8 +19,8 @@ public class CrawlerConfig {
     CrawlConfig config = new CrawlConfig();
     // depth 가 곧 page number 수 이동도 연관된 것 같다.
     config.setMaxDepthOfCrawling(15);
-    config.setCrawlStorageFolder("backup/" + UUID.randomUUID());
-    config.setUserAgentString("crawler-sample");
+    config.setCrawlStorageFolder("backup");
+    config.setUserAgentString("crawler-sample " + UUID.randomUUID());
     config.setPolitenessDelay(1000);
     config.setResumableCrawling(true);
 

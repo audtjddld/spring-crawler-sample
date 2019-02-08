@@ -17,6 +17,7 @@
 *.iml
 *.ipr
 *.log
+*.gz
 /out/
 
 ### NetBeans ###

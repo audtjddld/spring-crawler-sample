@@ -33,7 +33,7 @@ KAFKA_ADVERTISED_HOST_NAME을 `127.0.0.1` 로 변경한다.
 현재 버전은 `kafka_2.12-2.1.0` 버전이다.
 
 ```
-wget https://www.apache.org/dyn/closer.cgi?path=/kafka/2.1.0/kafka_2.12-2.1.0.tgz
+wget http://mirror.apache-kr.org/kafka/2.1.0/kafka_2.12-2.1.0.tgz
 tar xzvf kafka_2.12-2.1.0.tgz
 ```
 실행한 뒤 아래와 같이 접속해본다.

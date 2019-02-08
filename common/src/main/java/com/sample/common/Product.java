@@ -14,6 +14,7 @@ public class Product {
   private String mobileLink;
   private String categoryName1;
   private String imageLink;
+  private String pipeId;
 
   // "id\ttitle\tprice_pc\tprice_mobile\tnormal_price\tlink\tmobile_link\timage_link\tcategory_name1"
   //asdfasdf
@@ -37,6 +38,8 @@ public class Product {
         .append(mobileLink)
         .append(TAB)
         .append(imageLink)
+        .append(TAB)
+        .append(pipeId)
         .append(TAB)
         .append(categoryName1)
         .toString();

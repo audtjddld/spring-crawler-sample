@@ -26,7 +26,8 @@ jsoup = 스크래이핑
 
 [kafka docker 설치 링크](http://www.kwangsiklee.com/2017/03/docker-compose%EB%A1%9C-kafka%EB%A5%BC-%EB%A1%9C%EC%BB%AC%EC%97%90-%EB%9D%84%EC%9B%8C%EB%B3%B4%EC%9E%90/) 
 
-docker 실행 후 `docker-compose-single-broker.yml` 을 실행한다.
+docker 실행 후 `docker-compose-single-broker.yml` 을 실행한다.  
+KAFKA_ADVERTISED_HOST_NAME을 `127.0.0.1` 로 변경한다. 
 
 3. 로컬에 정상적으로 설치되었는지 확인한다.
 현재 버전은 `kafka_2.12-2.1.0` 버전이다.

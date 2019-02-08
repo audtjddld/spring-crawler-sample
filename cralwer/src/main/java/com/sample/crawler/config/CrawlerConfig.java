@@ -5,6 +5,7 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -18,9 +19,10 @@ public class CrawlerConfig {
     CrawlConfig config = new CrawlConfig();
     // depth 가 곧 page number 수 이동도 연관된 것 같다.
     config.setMaxDepthOfCrawling(15);
-    config.setCrawlStorageFolder("backup");
+    config.setCrawlStorageFolder("backup/" + UUID.randomUUID());
     config.setUserAgentString("crawler-sample");
     config.setPolitenessDelay(1000);
+    config.setResumableCrawling(true);
 
     PageFetcher pageFetcher = new PageFetcher(config);
     RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

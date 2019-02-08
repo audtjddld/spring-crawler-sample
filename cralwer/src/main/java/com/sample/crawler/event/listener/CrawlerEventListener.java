@@ -1,6 +1,7 @@
 package com.sample.crawler.event.listener;
 
 
+import com.sample.crawler.component.CollectProductLinkServiceMap;
 import com.sample.crawler.detail.service.CollectProductLinkService;
 import com.sample.crawler.event.model.CrawlerEvent;
 import com.sample.crawler.factory.CrawlerFactory;
@@ -11,11 +12,8 @@ import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -24,13 +22,13 @@ public class CrawlerEventListener {
 
   private final CrawlerFactory crawlerFactory;
   private final ApplicationContext applicationContext;
-  private final ConfigurableListableBeanFactory configurableListableBeanFactory;
+  private final CollectProductLinkServiceMap collectProductLinkServiceMap;
 
   @Autowired
-  public CrawlerEventListener(CrawlerFactory crawlerFactory, ApplicationContext applicationContext, GenericApplicationContext genericApplicationContext) {
+  public CrawlerEventListener(CrawlerFactory crawlerFactory, ApplicationContext applicationContext, CollectProductLinkServiceMap collectProductLinkServiceMap) {
     this.crawlerFactory = crawlerFactory;
     this.applicationContext = applicationContext;
-    this.configurableListableBeanFactory = genericApplicationContext.getBeanFactory();
+    this.collectProductLinkServiceMap = collectProductLinkServiceMap;
   }
 
   @EventListener
@@ -45,12 +43,13 @@ public class CrawlerEventListener {
     // detail page를 전달 받을 subscriber 생성.
     URL url = new URL(event.getCompany().getSeedURL());
     log.info("host: {}", url.getHost());
-    configurableListableBeanFactory.registerSingleton(url.getHost(), new CollectProductLinkService());
-
+//    configurableListableBeanFactory.registerSingleton(url.getHost(), new CollectProductLinkService());
+    collectProductLinkServiceMap.put(url.getHost(), new CollectProductLinkService());
     controller.addSeed(event.getCompany().getSeedURL());
     controller.start(clazz, 1);
 
-    ((DefaultListableBeanFactory) configurableListableBeanFactory).destroySingleton(url.getHost());
+//    ((DefaultListableBeanFactory) configurableListableBeanFactory).destroySingleton(url.getHost());
+    collectProductLinkServiceMap.remove(url.getHost());
 
   }
 

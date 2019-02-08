@@ -1,12 +1,9 @@
 package com.sample.crawler.parser;
 
 
-import static com.sample.crawler.config.EventConfig.applicationEventPublisher;
-
 import com.google.common.base.Strings;
 import com.sample.common.RegexGenerator;
 import com.sample.common.regex.MakeShop;
-import com.sample.crawler.event.model.CollectProductLinkEvent;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -93,13 +90,11 @@ public class MakeShopCrawler extends WebCrawler {
           Elements detailLinks = document.select("a[href^=/shop/shopdetail.html]");
           detailLinks.forEach(detailLink -> {
             String newDetailLink = String.format("http://%s%s", domain, detailLink.attr("href"));
-            //LOG.info("link : {}", link);
             regexGenerator.setLink(newDetailLink);
 
             String filterLink = regexGenerator.generateLink();
-            //LOG.info("filter link : {}", filterLink);
 
-            if (detailURLs.contains(filterLink)) {
+            if (detailURLs.contains(filterLink)) {  // detail 중복 링크 체크
               return;
             }
 

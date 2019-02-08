@@ -21,7 +21,7 @@ public class CrawlerConfig {
     config.setMaxDepthOfCrawling(15);
     config.setCrawlStorageFolder("backup");
     config.setUserAgentString("crawler-sample " + UUID.randomUUID());
-    config.setPolitenessDelay(1000);
+    config.setPolitenessDelay(1500);
     config.setResumableCrawling(true);
 
     PageFetcher pageFetcher = new PageFetcher(config);

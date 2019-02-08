@@ -1,8 +1,6 @@
 package com.sample.crawler.event.listener;
 
 
-import com.sample.crawler.component.CollectProductLinkServiceMap;
-import com.sample.crawler.detail.service.CollectProductLinkService;
 import com.sample.crawler.event.model.CrawlerEvent;
 import com.sample.crawler.factory.CrawlerFactory;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -22,13 +20,11 @@ public class CrawlerEventListener {
 
   private final CrawlerFactory crawlerFactory;
   private final ApplicationContext applicationContext;
-  private final CollectProductLinkServiceMap collectProductLinkServiceMap;
 
   @Autowired
-  public CrawlerEventListener(CrawlerFactory crawlerFactory, ApplicationContext applicationContext, CollectProductLinkServiceMap collectProductLinkServiceMap) {
+  public CrawlerEventListener(CrawlerFactory crawlerFactory, ApplicationContext applicationContext) {
     this.crawlerFactory = crawlerFactory;
     this.applicationContext = applicationContext;
-    this.collectProductLinkServiceMap = collectProductLinkServiceMap;
   }
 
   @EventListener
@@ -43,13 +39,8 @@ public class CrawlerEventListener {
     // detail page를 전달 받을 subscriber 생성.
     URL url = new URL(event.getCompany().getSeedURL());
     log.info("host: {}", url.getHost());
-//    configurableListableBeanFactory.registerSingleton(url.getHost(), new CollectProductLinkService());
-    collectProductLinkServiceMap.put(url.getHost(), new CollectProductLinkService());
     controller.addSeed(event.getCompany().getSeedURL());
     controller.start(clazz, 1);
-
-//    ((DefaultListableBeanFactory) configurableListableBeanFactory).destroySingleton(url.getHost());
-    collectProductLinkServiceMap.remove(url.getHost());
 
   }
 

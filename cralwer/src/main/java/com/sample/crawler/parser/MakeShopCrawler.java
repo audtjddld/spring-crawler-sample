@@ -4,6 +4,7 @@ package com.sample.crawler.parser;
 import static com.sample.crawler.config.EventConfig.applicationEventPublisher;
 
 import com.google.common.base.Strings;
+import com.sample.common.RegexGenerator;
 import com.sample.common.regex.MakeShop;
 import com.sample.crawler.event.model.CollectProductLinkEvent;
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -32,12 +33,16 @@ public class MakeShopCrawler extends WebCrawler {
   // 중복 URL 수집 불가
   private Set<String> menuURLs = new HashSet<>();
   private Set<String> preventURLs = new HashSet<>();
+  private Set<String> detailURLs = new HashSet<>();
+
   private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
+  private RegexGenerator regexGenerator;
 
   public MakeShopCrawler() {
     this.makeShopProductListScrap = new MakeShopProductListScrap();
+    this.regexGenerator = new RegexGenerator();
   }
 
   @Override
@@ -85,16 +90,24 @@ public class MakeShopCrawler extends WebCrawler {
         if (!menuURLs.contains(link)) { // 중복 링크 제거
           menuURLs.add(link);
 
-          log.debug("link : {} domain : {}", link, String.format("%s.%s", page.getWebURL().getSubDomain(), domain));
+          Elements detailLinks = document.select("a[href^=/shop/shopdetail.html]");
+          detailLinks.forEach(detailLink -> {
+            String newDetailLink = String.format("http://%s%s", domain, detailLink.attr("href"));
+            //LOG.info("link : {}", link);
+            regexGenerator.setLink(newDetailLink);
 
-          CollectProductLinkEvent event = CollectProductLinkEvent.builder()
-                                                      .categoryMap(categoryMap)
-                                                      .domain(domain)
-                                                      .host(String.format("%s.%s", page.getWebURL().getSubDomain(), domain))
-                                                      .link(link)
-                                                      .build();
+            String filterLink = regexGenerator.generateLink();
+            //LOG.info("filter link : {}", filterLink);
 
-          applicationEventPublisher.publishEvent(event);
+            if (detailURLs.contains(filterLink)) {
+              return;
+            }
+
+            detailURLs.add(filterLink);
+
+            //TODO detail link를 kafka를 통해서 보낸다.
+            log.info("filter link : {}", filterLink);
+          });
         }
       }
     });

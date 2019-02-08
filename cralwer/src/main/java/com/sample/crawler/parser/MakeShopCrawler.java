@@ -101,7 +101,7 @@ public class MakeShopCrawler extends WebCrawler {
             detailURLs.add(filterLink);
 
             //TODO detail link를 kafka를 통해서 보낸다.
-            log.info("filter link : {}", filterLink);
+            log.debug("filter link : {}", filterLink);
           });
         }
       }
@@ -141,6 +141,12 @@ public class MakeShopCrawler extends WebCrawler {
         logger.info("category map : {}", categoryMap);
       }
     }
+  }
+
+  @Override
+  public void onBeforeExit() {
+    super.onBeforeExit();
+    log.info("product count : {}", detailURLs.size());
   }
 }
 

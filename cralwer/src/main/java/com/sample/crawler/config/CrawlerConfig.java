@@ -18,11 +18,11 @@ public class CrawlerConfig {
   public CrawlController crawlController() throws Exception {
     CrawlConfig config = new CrawlConfig();
     // depth 가 곧 page number 수 이동도 연관된 것 같다.
-    config.setMaxDepthOfCrawling(15);
+    config.setMaxDepthOfCrawling(2);
     config.setCrawlStorageFolder("backup");
     config.setUserAgentString("crawler-sample " + UUID.randomUUID());
     config.setPolitenessDelay(1500);
-    config.setResumableCrawling(true);
+    //config.setResumableCrawling(true);
 
     PageFetcher pageFetcher = new PageFetcher(config);
     RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

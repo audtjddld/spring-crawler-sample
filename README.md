@@ -32,7 +32,7 @@ docker 실행 후 `docker-compose-single-broker.yml` 을 실행한다.
 현재 버전은 `kafka_2.12-2.1.0` 버전이다.
 
 ```
-wget https://www.apache.org/dyn/closer.cgi?path=/kafka/2.1.0/kafka_2.12-2.1.0.tgz
+wget http://mirror.apache-kr.org/kafka/2.1.0/kafka_2.12-2.1.0.tgz
 tar xzvf kafka_2.12-2.1.0.tgz
 ```
 실행한 뒤 아래와 같이 접속해본다.

@@ -1,8 +1,11 @@
 package com.sample.crawler.parser;
 
 
+import static com.sample.crawler.config.EventConfig.applicationEventPublisher;
+
 import com.google.common.base.Strings;
 import com.sample.common.regex.MakeShop;
+import com.sample.crawler.event.model.CollectProductLinkEvent;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -19,7 +22,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 상품 리스트만 조회
@@ -34,14 +36,12 @@ public class MakeShopCrawler extends WebCrawler {
   private String domain;
   private MakeShopProductListScrap makeShopProductListScrap;
 
-  @Autowired
   public MakeShopCrawler() {
     this.makeShopProductListScrap = new MakeShopProductListScrap();
   }
 
   @Override
   public boolean shouldVisit(Page referringPage, WebURL url) {
-
     if (Strings.isNullOrEmpty(domain)) {
       domain = referringPage.getWebURL().getDomain();
       logger.info("domain : {}", domain);
@@ -84,8 +84,17 @@ public class MakeShopCrawler extends WebCrawler {
         String link = makeShopProductListScrap.group();
         if (!menuURLs.contains(link)) { // 중복 링크 제거
           menuURLs.add(link);
-          log.info("link : {}", link);
-          //TODO another event (detail link)
+
+          log.debug("link : {} domain : {}", link, String.format("%s.%s", page.getWebURL().getSubDomain(), domain));
+
+          CollectProductLinkEvent event = CollectProductLinkEvent.builder()
+                                                      .categoryMap(categoryMap)
+                                                      .domain(domain)
+                                                      .host(String.format("%s.%s", page.getWebURL().getSubDomain(), domain))
+                                                      .link(link)
+                                                      .build();
+
+          applicationEventPublisher.publishEvent(event);
         }
       }
     });

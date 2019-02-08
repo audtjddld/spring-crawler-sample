@@ -25,6 +25,7 @@ public class CrawlerController {
   public ResponseEntity<Void> crawlerByPipeId(@RequestBody Company company) {
     log.info("크롤링이 시작되었습니다. pipeId : {}", company);
     applicationEventPublisher.publishEvent(new CrawlerEvent(company));
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok()
+        .build();
   }
 }

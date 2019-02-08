@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: local
+server:
+  port: 9091
+---
+spring:
+  profiles: local
+
+kafka:
+  brokers: 'broker: localhost:9092'
+  listener:
+    concurrency: 1
+  produce:
+    compression: 'lz4'
+  session:
+    timeout:
+      ms: 15000
+  poll:
+    records: 1000
+  fetch:
+    min:
+      bytes: 5242880
+    max:
+      bytes: 10485760
+    maxwait: 1
+  partition:
+    fetch:
+      bytes: 11534336
+  group:
+    id: 'test-consumer'
+  topic: 'test'

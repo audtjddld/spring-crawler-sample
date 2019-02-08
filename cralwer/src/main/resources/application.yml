@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: local
+
+server:
+  port: 9091
+---
+spring:
+  profiles: local
+
+#kafak 설정
+kafka:
+  brokers: 'broker: localhost:9092'
+  produce:
+    compression: 'lz4'
+  topic: 'test'

@@ -1,0 +1,19 @@
+group = 'com.sample.common'
+version = '0.0.1-SNAPSHOT'
+
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '1.8'
+
+dependencies {
+// https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+}

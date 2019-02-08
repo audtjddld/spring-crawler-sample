@@ -1,0 +1,42 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: "idea"
+
+group = 'com.sample.crawler'
+version = '1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.kafka:spring-kafka'
+    compileOnly 'org.projectlombok:lombok'
+    compile 'org.springframework.boot:spring-boot-starter-test'
+    compile 'org.springframework.kafka:spring-kafka-test'
+    // https://mvnrepository.com/artifact/edu.uci.ics/crawler4j
+    compile group: 'edu.uci.ics', name: 'crawler4j', version: '4.1'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+// https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    compile project(":common")
+
+}

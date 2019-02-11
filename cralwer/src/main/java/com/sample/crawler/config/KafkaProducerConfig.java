@@ -1,4 +1,4 @@
-package com.sample.crawler.kafka.config;
+package com.sample.crawler.config;
 
 import java.util.HashMap;
 import java.util.List;

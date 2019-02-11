@@ -1,4 +1,4 @@
-package com.sample.crawler.parser;
+package com.sample.crawler.extractor;
 
 
 import com.google.common.base.Strings;
@@ -8,38 +8,35 @@ import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
  * 상품 리스트만 조회
  */
 @Slf4j
-public class MakeShopCrawler extends WebCrawler {
+public class MakeShopExtractor extends WebCrawler {
 
   // 중복 URL 수집 불가
   private Set<String> menuURLs = new HashSet<>();
-  private Set<String> preventURLs = new HashSet<>();
-  private Set<String> detailURLs = new HashSet<>();
+  private Set<String> visitURLs = new HashSet<>();
+  private Set<String> extractDetailURLs = new HashSet<>();
 
-  private Map<String, String> categoryMap = new HashMap<>();
   private String domain;
-  private MakeShopProductListScrap makeShopProductListScrap;
+  private ExtractedMakeShopProductLink extractedMakeShopProductLink;
   private RegexGenerator regexGenerator;
+  private CategoryExtractor categoryExtractor;
 
-  public MakeShopCrawler() {
-    this.makeShopProductListScrap = new MakeShopProductListScrap();
+  public MakeShopExtractor() {
+    this.extractedMakeShopProductLink = new ExtractedMakeShopProductLink();
     this.regexGenerator = new RegexGenerator();
+    this.categoryExtractor = new CategoryExtractor();
   }
 
   @Override
@@ -53,16 +50,16 @@ public class MakeShopCrawler extends WebCrawler {
       return false;
     }
 
-    if (categoryMap.size() == 0) {
-      collectCategory(referringPage);
+    if (categoryExtractor.isEmpty()) {
+      categoryExtractor.extractCategory(referringPage);
       return true;
     }
 
-    if (preventURLs.contains(url.getURL())) {
+    if (visitURLs.contains(url.getURL())) {
       return false;
     }
 
-    preventURLs.add(url.getURL());
+    visitURLs.add(url.getURL());
 
     return url.getPath().startsWith("/shop/shopbrand.html");
   }
@@ -81,9 +78,9 @@ public class MakeShopCrawler extends WebCrawler {
 
     elements.forEach(e -> {
       String href = e.attr("href");
-      makeShopProductListScrap.matcher(href);
-      if (makeShopProductListScrap.find()) {
-        String link = makeShopProductListScrap.group();
+      extractedMakeShopProductLink.matcher(href);
+      if (extractedMakeShopProductLink.find()) {
+        String link = extractedMakeShopProductLink.group();
         if (!menuURLs.contains(link)) { // 중복 링크 제거
           menuURLs.add(link);
 
@@ -92,82 +89,49 @@ public class MakeShopCrawler extends WebCrawler {
             String newDetailLink = String.format("http://%s%s", domain, detailLink.attr("href"));
             regexGenerator.setLink(newDetailLink);
 
+            String category = categoryExtractor.getCategory(link);
+
             String filterLink = regexGenerator.generateLink();
 
-            if (detailURLs.contains(filterLink)) {  // detail 중복 링크 체크
+            if (extractDetailURLs.contains(filterLink)) {  // detail 중복 링크 체크
               return;
             }
 
-            detailURLs.add(filterLink);
+            extractDetailURLs.add(filterLink);
 
             //TODO detail link를 kafka를 통해서 보낸다.
-            log.debug("filter link : {}", filterLink);
+            log.info("filter link : {}, category : {}", filterLink, category);
           });
         }
       }
     });
   }
 
-  /**
-   * 상품에 맵핑 시키기 위한 카테고리 정보를 생성한다.
-   */
-  private void collectCategory(Page page) {
-    if (categoryMap.size() == 0) {
-      HtmlParseData data = (HtmlParseData) page.getParseData();
-      //logger.info("data {}", data);
-      if (data != null) {
-        Document document = null;
-        try {
-          document = Jsoup.connect(page.getWebURL().toString()).get();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-
-        Pattern pattern = Pattern.compile("(xcode=([0-9]+))");
-        Matcher codeMatcher;
-        assert document != null;
-
-        Elements elements = document.select("a[href^=/shop/shopbrand.html]");
-        for (Element el : elements) {
-          //System.out.println(el);
-          if (!Strings.isNullOrEmpty(el.text()) && el.attr("href").indexOf("mcode") <= 0) {
-            String link = el.attr("href");
-            codeMatcher = pattern.matcher(link);
-            String key = codeMatcher.find() ? codeMatcher.group(2) : "Crawling";
-            String categoryName = el.text();
-            categoryMap.put(key, categoryName);
-          }
-        }
-        logger.info("category map : {}", categoryMap);
-      }
-    }
-  }
-
   @Override
   public void onBeforeExit() {
     super.onBeforeExit();
-    log.info("product count : {}", detailURLs.size());
+    log.info("product count : {}", extractDetailURLs.size());
   }
 }
 
-class MakeShopProductListScrap {
+class ExtractedMakeShopProductLink {
 
   private Pattern pattern;
   private Matcher matcher = null;
 
-  public MakeShopProductListScrap() {
+  ExtractedMakeShopProductLink() {
     pattern = Pattern.compile(MakeShop.MAKE_SHOP_PAGE_REGEX);
   }
 
-  public void matcher(String text) {
+  void matcher(String text) {
     this.matcher = pattern.matcher(text);
   }
 
-  public boolean find() {
+  boolean find() {
     return this.matcher.find();
   }
 
-  public String group() {
+  String group() {
     return this.matcher.group();
   }
 }

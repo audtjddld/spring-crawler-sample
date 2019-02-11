@@ -24,11 +24,11 @@ public class KafkaService {
   }
 
   public void sendMessage(ScrapingMessage scrapingMessage) {
-    log.info("get message : {}", scrapingMessage);
+    log.info("received message : {}", scrapingMessage);
   }
 
   @PostConstruct
   public void init() {
-    this.kafkaService = kafkaService;
+    this.kafkaService = this;
   }
 }

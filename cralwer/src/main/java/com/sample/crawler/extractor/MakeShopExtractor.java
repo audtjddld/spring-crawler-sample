@@ -1,8 +1,11 @@
 package com.sample.crawler.extractor;
 
 
+import static com.sample.crawler.kafka.service.KafkaService.kafkaService;
+
 import com.google.common.base.Strings;
 import com.sample.common.RegexGenerator;
+import com.sample.common.message.ScrapingMessage;
 import com.sample.common.regex.MakeShop;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -98,9 +101,9 @@ public class MakeShopExtractor extends WebCrawler {
             }
 
             extractDetailURLs.add(filterLink);
+            log.debug("filter link : {}, category : {}", filterLink, category);
 
-            //TODO detail link를 kafka를 통해서 보낸다.
-            log.info("filter link : {}, category : {}", filterLink, category);
+            kafkaService.sendMessage(new ScrapingMessage(domain, filterLink, category));
           });
         }
       }

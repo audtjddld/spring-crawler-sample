@@ -1,5 +1,6 @@
 package com.sample.scraping.config;
 
+import com.sample.scraping.kafka.listener.CrawlerListener;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -71,4 +72,8 @@ public class KafkaConsumerConfig {
     return props;
   }
 
+  @Bean
+  public CrawlerListener crawlerListener() {
+    return new CrawlerListener();
+  }
 }

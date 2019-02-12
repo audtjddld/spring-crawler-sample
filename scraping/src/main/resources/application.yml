@@ -2,7 +2,7 @@ spring:
   profiles:
     active: local
 server:
-  port: 9091
+  port: 9093
 ---
 spring:
   profiles: local
@@ -17,7 +17,7 @@ kafka:
     timeout:
       ms: 15000
   poll:
-    records: 1000
+    records: 2
   fetch:
     min:
       bytes: 5242880

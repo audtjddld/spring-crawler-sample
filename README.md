@@ -1,8 +1,8 @@
 # crawler-sample
+
+Java crawling sample project.
+
 크롤링 관련 샘플 코드
-
-임시 쇼핑몰 업체를 설정하였는데 문제 있으면 삭제하겠습니다.
-
 
 crawler4j = 크롤링
 
@@ -53,3 +53,5 @@ topic list에 test가 나타나면 정상 셋팅 된 것이다.
 ```
 curl -d '{"companyId" :  "test", "type": "MAKESHOP", "seedURL" : "url" }' -H "Content-Type: application/json" -X POST http://localhost:9091/crawling
 ```
+
+

@@ -1,0 +1,65 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'io.freefair.lombok' version '4.1.6'
+}
+
+subprojects {
+    ext {
+        apiBaseVersion = '3.2.8'
+    }
+
+    group = 'com.kurly.cloud'
+    version = '0.0.1-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'io.freefair.lombok'
+    apply plugin: 'checkstyle'
+
+    sourceCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://repo.infra.kurlycorp.kr/repository/kurly-maven/' }
+    }
+
+    dependencies {
+        implementation 'org.projectlombok:lombok:1.18.12'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    generateLombokConfig.enabled = false
+}
+
+project(':common') {
+    dependencies {
+        implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+    }
+}
+
+project(':cralwer') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.kafka:spring-kafka'
+        implementation group: 'edu.uci.ics', name: 'crawler4j', version: '4.1'
+        implementation group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+        implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+        implementation project(":common")
+
+        testImplementation 'org.junit.platform:junit-platform-runner:1.6.2'
+    }
+}
+
+project(':scraping') {
+    dependencies {
+        implementation 'org.springframework.kafka:spring-kafka'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.kafka:spring-kafka-test'
+        implementation project(":common")
+    }
+}
